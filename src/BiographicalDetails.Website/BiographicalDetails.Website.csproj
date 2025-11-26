@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-BiographicalDetails.Website-ceadff59-f722-40ad-808b-ac4c78aeed4c</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BiographicalDetails.Application\BiographicalDetails.Application.csproj" />
+    <ProjectReference Include="..\BiographicalDetails.Infrastructure.Sql\BiographicalDetails.Infrastructure.Sql.csproj" />
+    <ProjectReference Include="..\BiographicalDetails.Infrastructure\BiographicalDetails.Infrastructure.InMemory.csproj" />
+  </ItemGroup>
+
+</Project>
