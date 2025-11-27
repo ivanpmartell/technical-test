@@ -74,11 +74,24 @@ public class SqliteBiographicalDataRepository : IBiographicalDataRepository
 	{
 		int affected = 0;
 		var dataInDb = await _context.Users.FindAsync(biographicalDataId);
-		if (dataInDb is not null)
-		{
-			_context.Users.Remove(dataInDb);
-			affected = await _context.SaveChangesAsync();
-		}
+		if (dataInDb is null)
+			return false;
+
+		_context.Users.Remove(dataInDb);
+
+		var userPronounsInDb = await _context.UserPronouns.FirstOrDefaultAsync(up => up.UserId == dataInDb.Id);
+		if (userPronounsInDb is not null)
+			_context.UserPronouns.Remove(userPronounsInDb);
+
+		var userSinInDb = await _context.UserSins.FirstOrDefaultAsync(us => us.UserId == dataInDb.Id);
+		if (userSinInDb is not null)
+			_context.UserSins.Remove(userSinInDb);
+
+		var userUciInDb = await _context.UserUcis.FirstOrDefaultAsync(uu => uu.UserId == dataInDb.Id);
+		if (userUciInDb is not null)
+			_context.UserUcis.Remove(userUciInDb);
+
+		affected = await _context.SaveChangesAsync();
 
 		if (affected == 0)
 			return false;
@@ -174,7 +187,7 @@ public class SqliteBiographicalDataRepository : IBiographicalDataRepository
 
 		if (biographicalData.UniqueClientIdentifier is not null)
 		{
-			var userUciInDb = await _context.UserUcis.FirstOrDefaultAsync(us => us.UserId == biographicalData.Id);
+			var userUciInDb = await _context.UserUcis.FirstOrDefaultAsync(uu => uu.UserId == biographicalData.Id);
 			if (userUciInDb is not null && userUciInDb.UniqueClientIdentifier != biographicalData.UniqueClientIdentifier)
 			{
 				_mapper.MapToUserUCIByRef(biographicalData, userUciInDb);
