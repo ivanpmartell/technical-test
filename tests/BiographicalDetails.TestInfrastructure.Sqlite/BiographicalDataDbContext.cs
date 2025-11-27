@@ -1,11 +1,9 @@
-﻿// Use this project to create migrations for the Test Sql Database
-
-using BiographicalDetails.Infrastructure.Sql.Contexts;
-using BiographicalDetails.Infrastructure.Sql.Contexts.Extensions;
-using BiographicalDetails.TestInfrastructure.Sql.Loggers;
+﻿using BiographicalDetails.Infrastructure.Sqlite.Contexts;
+using BiographicalDetails.Infrastructure.Sqlite.Contexts.Extensions;
+using BiographicalDetails.TestInfrastructure.Sqlite.Loggers;
 using Microsoft.EntityFrameworkCore;
 
-namespace BiographicalDetails.TestInfrastructure.Sql.Contexts;
+namespace BiographicalDetails.TestInfrastructure.Sqlite;
 
 public class BiographicalDataTestDbContext : BiographicalDataDbContext
 {
@@ -18,7 +16,7 @@ public class BiographicalDataTestDbContext : BiographicalDataDbContext
 	{
 		if (!optionsBuilder.IsConfigured)
 		{
-			optionsBuilder.UseSqlServer(BiographicalDataContextExtensions.DefaultConnectionString("BiographicalDetails_Tests"));
+			optionsBuilder.UseSqlite(BiographicalDataContextExtensions.DefaultConnectionString("BiographicalDetails_Tests"));
 			optionsBuilder.LogTo(BiographicalDataTestLogger.WriteLine,
 				  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting]);
 		}

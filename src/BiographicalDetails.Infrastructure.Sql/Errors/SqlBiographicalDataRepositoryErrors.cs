@@ -1,4 +1,4 @@
-﻿namespace BiographicalDetails.Infrastructure.InMemory.Errors;
+﻿namespace BiographicalDetails.Infrastructure.Sql.Errors;
 
 public static class SqlBiographicalDataRepositoryErrors
 {

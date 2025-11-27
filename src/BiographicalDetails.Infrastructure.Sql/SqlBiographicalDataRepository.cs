@@ -1,7 +1,7 @@
 ﻿using BiographicalDetails.Domain;
 using BiographicalDetails.Domain.Abstractions;
 using BiographicalDetails.EntityModels.Abstractions;
-using BiographicalDetails.Infrastructure.InMemory.Errors;
+using BiographicalDetails.Infrastructure.Sql.Errors;
 using BiographicalDetails.Infrastructure.Sql.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -82,6 +82,7 @@ public class SqlBiographicalDataRepository : IBiographicalDataRepository
 	{
 		var result =
 			from biographicalData in _context.BiographicalDatas
+			where biographicalData.Id == biographicalDataId
 			select new BiographicalData
 			{
 				Id = biographicalData.Id,

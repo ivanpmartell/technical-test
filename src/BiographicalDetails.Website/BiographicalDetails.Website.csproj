@@ -19,7 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BiographicalDetails.Application\BiographicalDetails.Application.csproj" />
     <ProjectReference Include="..\BiographicalDetails.Infrastructure.Sql\BiographicalDetails.Infrastructure.Sql.csproj" />
-    <ProjectReference Include="..\BiographicalDetails.Infrastructure\BiographicalDetails.Infrastructure.InMemory.csproj" />
+    <ProjectReference Include="..\BiographicalDetails.Infrastructure.Sqlite\BiographicalDetails.Infrastructure.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>

@@ -39,6 +39,8 @@ public class BiographicalDetailsServicesTests
 			UniqueClientIdentifier = "0000-0000"
 		};
 
+		_biographicalDetailsRepositoryMock.Setup(repo => repo.AddAsync(submission)).ReturnsAsync(submission);
+
 		//Act
 		var result = await _biographicalDetailsService.SaveBiographicalInfoAsync(submission);
 
@@ -79,7 +81,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.SaveBiographicalInfoAsync(submission);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<NullReferenceException>(result);
+		var exception = await Assert.ThrowsAsync<SINException>(result);
 		Assert.Equal(BiographicalDetailsErrors.RequiredSIN_Missing, exception.Message);
 	}
 
@@ -108,7 +110,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.SaveBiographicalInfoAsync(submission);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<NullReferenceException>(result);
+		var exception = await Assert.ThrowsAsync<UCIException>(result);
 		Assert.Equal(BiographicalDetailsErrors.RequiredUCI_Missing, exception.Message);
 	}
 
@@ -127,6 +129,8 @@ public class BiographicalDetailsServicesTests
 			SocialInsuranceNumber = null,
 			UniqueClientIdentifier = "0000-0000"
 		};
+
+		_biographicalDetailsRepositoryMock.Setup(repo => repo.AddAsync(submission)).ReturnsAsync(submission);
 
 		//Act
 		var result = await _biographicalDetailsService.SaveBiographicalInfoAsync(submission);
@@ -165,7 +169,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.SaveBiographicalInfoAsync(submission);
 
 		//Assert
-		var _ = await Assert.ThrowsAsync<NullReferenceException>(result);
+		var _ = await Assert.ThrowsAsync<UCIException>(result);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<BiographicalData>()), Times.Never);
 	}
 
@@ -202,18 +206,17 @@ public class BiographicalDetailsServicesTests
 	}
 
 	[Fact]
-	public async Task GetBiographicalInfo_ForNonExistentData_ShouldThrowException()
+	public async Task GetBiographicalInfo_ForNonExistentData_ShouldReturnNull()
 	{
 		//Arrange
 		var biographicalDataId = 9999;
 		_biographicalDetailsRepositoryMock.Setup(repo => repo.GetAsync(biographicalDataId)).ReturnsAsync((BiographicalData?)null);
 
 		//Act
-		var result = async () => await _biographicalDetailsService.GetBiographicalInfoAsync(biographicalDataId);
+		var result = await _biographicalDetailsService.GetBiographicalInfoAsync(biographicalDataId);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<KeyNotFoundException>(result);
-		Assert.Equal(BiographicalDetailsErrors.BiographicalDetails_NotFound, exception.Message);
+		Assert.Null(result);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.GetAsync(biographicalDataId), Times.Once);
 	}
 
@@ -358,7 +361,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.UpdateBiographicalInfoAsync(updatingBiographicalData);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<NullReferenceException>(result);
+		var exception = await Assert.ThrowsAsync<UCIException>(result);
 		Assert.Equal(BiographicalDetailsErrors.RequiredUCI_Missing, exception.Message);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.GetAsync(biographicalDataId), Times.Never);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<BiographicalData>()), Times.Never);
@@ -407,7 +410,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.UpdateBiographicalInfoAsync(updatingBiographicalData);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<InvalidDataException>(result);
+		var exception = await Assert.ThrowsAsync<UCIException>(result);
 		Assert.Equal(BiographicalDetailsErrors.UCIFormat_Invalid, exception.Message);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.GetAsync(biographicalDataId), Times.Never);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<BiographicalData>()), Times.Never);
@@ -452,7 +455,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.UpdateBiographicalInfoAsync(updatingBiographicalData);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<NullReferenceException>(result);
+		var exception = await Assert.ThrowsAsync<SINException>(result);
 		Assert.Equal(BiographicalDetailsErrors.RequiredSIN_Missing, exception.Message);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.GetAsync(biographicalDataId), Times.Never);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<BiographicalData>()), Times.Never);
@@ -502,7 +505,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.UpdateBiographicalInfoAsync(updatingBiographicalData);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<InvalidDataException>(result);
+		var exception = await Assert.ThrowsAsync<SINException>(result);
 		Assert.Equal(BiographicalDetailsErrors.SINFormat_Invalid, exception.Message);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.GetAsync(biographicalDataId), Times.Never);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<BiographicalData>()), Times.Never);
@@ -591,7 +594,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.UpdateBiographicalInfoAsync(updatingBiographicalData);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<InvalidOperationException>(result);
+		var exception = await Assert.ThrowsAsync<UCIException>(result);
 		Assert.Equal(BiographicalDetailsErrors.AlreadySet_UCI_CannotUpdate, exception.Message);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.GetAsync(biographicalDataId), Times.Once);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<BiographicalData>()), Times.Never);
@@ -635,7 +638,7 @@ public class BiographicalDetailsServicesTests
 		var result = async () => await _biographicalDetailsService.UpdateBiographicalInfoAsync(updatingBiographicalData);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<InvalidOperationException>(result);
+		var exception = await Assert.ThrowsAsync<SINException>(result);
 		Assert.Equal(BiographicalDetailsErrors.AlreadySet_SIN_CannotUpdate, exception.Message);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.GetAsync(biographicalDataId), Times.Once);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<BiographicalData>()), Times.Never);
@@ -662,18 +665,17 @@ public class BiographicalDetailsServicesTests
 	}
 
 	[Fact]
-	public async Task DeleteBiographicalInfo_ForNonExistentData_ShouldThrowException()
+	public async Task DeleteBiographicalInfo_ForNonExistentData_ShouldReturnFalse()
 	{
 		//Arrange
 		var biographicalDataId = 9999;
 		_biographicalDetailsRepositoryMock.Setup(repo => repo.DeleteAsync(biographicalDataId)).ReturnsAsync(false);
 
 		//Act
-		var result = async () => await _biographicalDetailsService.DeleteBiographicalInfoAsync(biographicalDataId);
+		var result = await _biographicalDetailsService.DeleteBiographicalInfoAsync(biographicalDataId);
 
 		//Assert
-		var exception = await Assert.ThrowsAsync<KeyNotFoundException>(result);
-		Assert.Equal(BiographicalDetailsErrors.BiographicalDetails_NotFound, exception.Message);
+		Assert.False(result);
 		_biographicalDetailsRepositoryMock.Verify(repo => repo.DeleteAsync(biographicalDataId), Times.Once);
 	}
 

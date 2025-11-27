@@ -4,8 +4,9 @@ using BiographicalDetails.EntityModels.Mappers;
 using BiographicalDetails.Infrastructure.Sql;
 using BiographicalDetails.Infrastructure.Sql.Contexts;
 using BiographicalDetails.Infrastructure.Sql.Contexts.Extensions;
-using BiographicalDetails.Infrastructure.Sql.Contexts.Loggers;
+using BiographicalDetails.TestInfrastructure.Sql.Loggers;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace BiographicalDetails.Integration.Tests;
 
@@ -21,12 +22,12 @@ public class SqlDatabaseFixture : IDisposable
 
 		var options = new DbContextOptionsBuilder<BiographicalDataDbContext>()
 			.UseSqlServer(BiographicalDataContextExtensions.DefaultConnectionString(dbName))
-			.LogTo(BiographicalDataLogger.WriteLine,
+			.LogTo(BiographicalDataTestLogger.WriteLine,
 				  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting])
 			.Options;
 
 		context = new BiographicalDataDbContext(options);
-		mapper = new BiographicalDataMapper();
+		mapper = new BiographicalDataEntityMapper();
 		sqlRepository = new SqlBiographicalDataRepository(context, mapper);
 	}
 
@@ -128,9 +129,25 @@ public class SqlBiographicalDataRepositoryTests : IClassFixture<SqlDatabaseFixtu
 			UniqueClientIdentifier = "0000-0000"
 		};
 
+		var anotherBiographicalData = new BiographicalData
+		{
+			Id = 0,
+			FirstName = "Juan",
+			LastName = "Perez",
+			Email = "juan@test2.com",
+			PreferredPronouns = "He/Him",
+			LevelOfStudy = LevelOfStudy.HighSchoolDiploma,
+			ImmigrationStatus = ImmigrationStatus.Visitor,
+			SocialInsuranceNumber = null,
+			UniqueClientIdentifier = "0000-0000"
+		};
+
 		var addedBiographicalData = await _dbFixture.sqlRepository.AddAsync(biographicalData);
+		var addedAnotherBiographicalData = await _dbFixture.sqlRepository.AddAsync(anotherBiographicalData);
 		Assert.NotNull(addedBiographicalData);
+		Assert.NotNull(addedAnotherBiographicalData);
 		biographicalData.Id = addedBiographicalData.Id;
+		anotherBiographicalData.Id = addedAnotherBiographicalData.Id;
 
 		//Act
 		var retrievedData = await _dbFixture.sqlRepository.GetAllAsync();
@@ -138,7 +155,8 @@ public class SqlBiographicalDataRepositoryTests : IClassFixture<SqlDatabaseFixtu
 		//Assert
 		Assert.NotNull(retrievedData);
 		Assert.Collection(retrievedData,
-			item => Assert.Equal(biographicalData, item)
+			item => Assert.Equal(biographicalData, item),
+			item => Assert.Equal(anotherBiographicalData, item)
 		);
 	}
 

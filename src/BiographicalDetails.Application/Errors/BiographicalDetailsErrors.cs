@@ -12,4 +12,5 @@ public static class BiographicalDetailsErrors
 	public const string SIN_Invalid = "SIN_Invalid";
 	public const string AlreadySet_SIN_CannotUpdate = "AlreadySet_SIN_CannotUpdate";
 	public const string AlreadySet_UCI_CannotUpdate = "AlreadySet_UCI_CannotUpdate";
+	public const string BiographicalDetails_NotAdded = "BiographicalDetails_NotAdded";
 }

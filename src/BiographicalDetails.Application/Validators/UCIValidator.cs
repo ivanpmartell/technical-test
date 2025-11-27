@@ -23,7 +23,7 @@ public class UCIValidator : IValidatorUCI
 		var pattern = @"^\d{4}-\d{4}$|^\d{2}-\d{4}-\d{4}$";
 		var match = Regex.Match(uci, pattern);
 
-		if (!match.Success || validDigitsCount != 8)
+		if (!match.Success || (validDigitsCount != 8 && validDigitsCount != 10))
 		{
 			errorMessage = BiographicalDetailsErrors.UCIFormat_Invalid;
 			return false;

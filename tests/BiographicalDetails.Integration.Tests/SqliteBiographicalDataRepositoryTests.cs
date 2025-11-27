@@ -2,41 +2,46 @@
 using BiographicalDetails.EntityModels;
 using BiographicalDetails.EntityModels.Abstractions;
 using BiographicalDetails.EntityModels.Mappers;
-using BiographicalDetails.Infrastructure.InMemory;
-using BiographicalDetails.Infrastructure.InMemory.Contexts;
+using BiographicalDetails.Infrastructure.Sqlite;
+using BiographicalDetails.Infrastructure.Sqlite.Contexts;
+using BiographicalDetails.Infrastructure.Sqlite.Contexts.Extensions;
+using BiographicalDetails.Infrastructure.Sqlite.Contexts.Loggers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BiographicalDetails.Integration.Tests;
 
-public class InMemoryDatabaseFixture : IDisposable
+public class SqliteDatabaseFixture : IDisposable
 {
 	internal BiographicalDataDbContext context;
-	internal InMemoryBiographicalDataRepository inMemoryRepository;
+	internal SqliteBiographicalDataRepository sqLiteRepository;
 	internal IBiographicalDataMapper mapper;
 
-	public InMemoryDatabaseFixture()
+	public SqliteDatabaseFixture()
 	{
+		var dbName = $"BiographicalDetails_Tests";
+
 		var options = new DbContextOptionsBuilder<BiographicalDataDbContext>()
-			.UseInMemoryDatabase(databaseName: $"BiographicalDetailsTestInMemoryDb_{Guid.NewGuid()}")
+			.UseSqlite(BiographicalDataContextExtensions.DefaultConnectionString(dbName))
+			.LogTo(BiographicalDataLogger.WriteLine,
+			  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting])
 			.Options;
 
 		context = new BiographicalDataDbContext(options);
-		mapper = new BiographicalDataMapper();
-		inMemoryRepository = new InMemoryBiographicalDataRepository(context, mapper);
+		mapper = new BiographicalDataEntityMapper();
+		sqLiteRepository = new SqliteBiographicalDataRepository(context, mapper);
 	}
 
 	public void Dispose()
 	{
-		context.Database.EnsureDeleted();
 		context.Dispose();
 	}
 }
 
-public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDatabaseFixture>, IDisposable
+public class SqliteBiographicalDataRepositoryTests : IClassFixture<SqliteDatabaseFixture>, IDisposable
 {
-	private InMemoryDatabaseFixture _dbFixture;
+	private SqliteDatabaseFixture _dbFixture;
 
-	public InMemoryBiographicalDataRepositoryTests(InMemoryDatabaseFixture dbFixture)
+	public SqliteBiographicalDataRepositoryTests(SqliteDatabaseFixture dbFixture)
 	{
 		_dbFixture = dbFixture;
 	}
@@ -51,19 +56,12 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 	}
 
 	[Fact]
-	public void DatabaseConnectTest()
-	{
-		Assert.True(_dbFixture.context.Database.CanConnect());
-	}
-
-	[Fact]
 	public async Task AddAsync_BiographicalData_ShouldAddToDatabase()
 	{
 		//Arrange
-		var biographicalDataId = 3;
 		var biographicalData = new BiographicalData
 		{
-			Id = biographicalDataId,
+			Id = 0,
 			FirstName = "Ivan",
 			LastName = "Perez",
 			Email = "ivan@test.com",
@@ -76,13 +74,13 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 
 		//Act
 
-		await _dbFixture.inMemoryRepository.AddAsync(biographicalData);
+		var addedBiographicalData = await _dbFixture.sqLiteRepository.AddAsync(biographicalData);
 
 		//Assert
-		var userInDb = await _dbFixture.context.FindAsync<UserEntity>(biographicalDataId);
-		Assert.NotNull(userInDb);
-		Assert.Equal(biographicalDataId, userInDb.Id);
-		Assert.Equal(biographicalData, await _dbFixture.inMemoryRepository.GetAsync(biographicalDataId));
+		Assert.NotNull(addedBiographicalData);
+		var dataInDb = await _dbFixture.context.FindAsync<UserEntity>(addedBiographicalData.Id);
+		Assert.NotNull(dataInDb);
+		Assert.Equal(dataInDb.Id, addedBiographicalData.Id);
 	}
 
 	[Fact]
@@ -92,7 +90,7 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 		var biographicalDataId = 999;
 
 		//Act
-		var biographicalData = await _dbFixture.inMemoryRepository.GetAsync(biographicalDataId);
+		var biographicalData = await _dbFixture.sqLiteRepository.GetAsync(biographicalDataId);
 
 		//Assert
 		Assert.Null(biographicalData);
@@ -104,7 +102,7 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 		//Arrange
 
 		//Act
-		var biographicalData = await _dbFixture.inMemoryRepository.GetAllAsync();
+		var biographicalData = await _dbFixture.sqLiteRepository.GetAllAsync();
 
 		//Assert
 		Assert.NotNull(biographicalData);
@@ -115,10 +113,9 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 	public async Task GetAllAsync_WithExistingData_ShouldReturnCollection()
 	{
 		//Arrange
-		var biographicalDataId = 1;
 		var biographicalData = new BiographicalData
 		{
-			Id = biographicalDataId,
+			Id = 0,
 			FirstName = "Ivan",
 			LastName = "Perez",
 			Email = "ivan@test.com",
@@ -129,15 +126,34 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 			UniqueClientIdentifier = "0000-0000"
 		};
 
-		await _dbFixture.inMemoryRepository.AddAsync(biographicalData);
+		var anotherBiographicalData = new BiographicalData
+		{
+			Id = 0,
+			FirstName = "Juan",
+			LastName = "Perez",
+			Email = "juan@test2.com",
+			PreferredPronouns = "He/Him",
+			LevelOfStudy = LevelOfStudy.HighSchoolDiploma,
+			ImmigrationStatus = ImmigrationStatus.Visitor,
+			SocialInsuranceNumber = null,
+			UniqueClientIdentifier = "0000-0000"
+		};
+
+		var addedBiographicalData = await _dbFixture.sqLiteRepository.AddAsync(biographicalData);
+		var addedAnotherBiographicalData = await _dbFixture.sqLiteRepository.AddAsync(anotherBiographicalData);
+		Assert.NotNull(addedBiographicalData);
+		Assert.NotNull(addedAnotherBiographicalData);
+		biographicalData.Id = addedBiographicalData.Id;
+		anotherBiographicalData.Id = addedAnotherBiographicalData.Id;
 
 		//Act
-		var retrievedData = await _dbFixture.inMemoryRepository.GetAllAsync();
+		var retrievedData = await _dbFixture.sqLiteRepository.GetAllAsync();
 
 		//Assert
 		Assert.NotNull(retrievedData);
 		Assert.Collection(retrievedData,
-			item => Assert.Equal(biographicalData, item)
+			item => Assert.Equal(biographicalData, item),
+			item => Assert.Equal(anotherBiographicalData, item)
 		);
 	}
 
@@ -145,10 +161,9 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 	public async Task DeleteAsync_WithExistingData_ShouldReturnTrue()
 	{
 		//Arrange
-		var biographicalDataId = 1;
 		var biographicalData = new BiographicalData
 		{
-			Id = biographicalDataId,
+			Id = 0,
 			FirstName = "Ivan",
 			LastName = "Perez",
 			Email = "ivan@test.com",
@@ -159,14 +174,16 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 			UniqueClientIdentifier = "0000-0000"
 		};
 
-		await _dbFixture.inMemoryRepository.AddAsync(biographicalData);
+		var addedBiographicalData = await _dbFixture.sqLiteRepository.AddAsync(biographicalData);
+		Assert.NotNull(addedBiographicalData);
+		biographicalData.Id = addedBiographicalData.Id;
 
 		//Act
-		var deleted = await _dbFixture.inMemoryRepository.DeleteAsync(biographicalDataId);
+		var deleted = await _dbFixture.sqLiteRepository.DeleteAsync(biographicalData.Id);
 
 		//Assert
 		Assert.True(deleted);
-		Assert.Null(await _dbFixture.inMemoryRepository.GetAsync(biographicalDataId));
+		Assert.Null(await _dbFixture.sqLiteRepository.GetAsync(biographicalData.Id));
 	}
 
 	[Fact]
@@ -176,7 +193,7 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 		var biographicalDataId = 999;
 
 		// Act
-		var deleted = await _dbFixture.inMemoryRepository.DeleteAsync(biographicalDataId);
+		var deleted = await _dbFixture.sqLiteRepository.DeleteAsync(biographicalDataId);
 
 		// Assert
 		Assert.False(deleted);
@@ -186,10 +203,9 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 	public async Task UpdateAsync_WithExistingData_ShouldReturnTrue()
 	{
 		//Arrange
-		var biographicalDataId = 1;
 		var biographicalData = new BiographicalData
 		{
-			Id = biographicalDataId,
+			Id = 0,
 			FirstName = "Ivan",
 			LastName = "Perez",
 			Email = "ivan@test.com",
@@ -200,9 +216,11 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 			UniqueClientIdentifier = "0000-0000"
 		};
 
+		var addedBiographicalData = await _dbFixture.sqLiteRepository.AddAsync(biographicalData);
+		Assert.NotNull(addedBiographicalData);
 		var updatedBiographicalData = new BiographicalData
 		{
-			Id = biographicalDataId,
+			Id = addedBiographicalData.Id,
 			FirstName = "Ivan",
 			LastName = "Yay",
 			Email = "perez@test2.com",
@@ -213,14 +231,12 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 			UniqueClientIdentifier = "0000-0000"
 		};
 
-		await _dbFixture.inMemoryRepository.AddAsync(biographicalData);
-
 		//Act
-		var updated = await _dbFixture.inMemoryRepository.UpdateAsync(updatedBiographicalData);
+		var updated = await _dbFixture.sqLiteRepository.UpdateAsync(updatedBiographicalData);
 
 		//Assert
 		Assert.True(updated);
-		Assert.Equal(updatedBiographicalData, await _dbFixture.inMemoryRepository.GetAsync(biographicalDataId));
+		Assert.Equal(updatedBiographicalData, await _dbFixture.sqLiteRepository.GetAsync(addedBiographicalData.Id));
 	}
 
 	[Fact]
@@ -242,7 +258,7 @@ public class InMemoryBiographicalDataRepositoryTests : IClassFixture<InMemoryDat
 		};
 
 		// Act
-		var updated = await _dbFixture.inMemoryRepository.UpdateAsync(biographicalData);
+		var updated = await _dbFixture.sqLiteRepository.UpdateAsync(biographicalData);
 
 		// Assert
 		Assert.False(updated);

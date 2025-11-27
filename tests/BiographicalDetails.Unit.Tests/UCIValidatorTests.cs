@@ -16,6 +16,8 @@ public class UCIValidatorTests
 	[InlineData("1234-5678")]
 	[InlineData("9999-9999")]
 	[InlineData("9876-5432")]
+	[InlineData("00-0000-0000")]
+	[InlineData("01-0002-1234")]
 	public void IsValid_ForValidFormat_ShouldReturnTrueAndEmptyErrorMsg(string uci)
 	{
 		//Arrange

@@ -19,19 +19,19 @@ public class BiographicalDataValidator : IBiographicalDataValidator
 		if (ImmigrationStatusRequiresSIN(data.ImmigrationStatus))
 		{
 			if (data.SocialInsuranceNumber is null)
-				throw new NullReferenceException(BiographicalDetailsErrors.RequiredSIN_Missing);
+				throw new SINException(BiographicalDetailsErrors.RequiredSIN_Missing);
 
 			if (!_sinValidator.IsValid(data.SocialInsuranceNumber, out string errorMsg))
-				throw new InvalidDataException(errorMsg);
+				throw new SINException(errorMsg);
 		}
 
 		if (ImmigrationStatusRequiresUCI(data.ImmigrationStatus))
 		{
 			if (data.UniqueClientIdentifier is null)
-				throw new NullReferenceException(BiographicalDetailsErrors.RequiredUCI_Missing);
+				throw new UCIException(BiographicalDetailsErrors.RequiredUCI_Missing);
 
 			if (!_uciValidator.IsValid(data.UniqueClientIdentifier, out string errorMsg))
-				throw new InvalidDataException(errorMsg);
+				throw new UCIException(errorMsg);
 		}
 	}
 

@@ -1,13 +1,13 @@
-﻿@model IEnumerable<BiographicalDetails.Domain.BiographicalData>
+﻿@model IEnumerable<BiographicalDetailsModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Submissions List";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Submit new Biographical Details</a>
 </p>
 <table class="table">
     <thead>
@@ -20,9 +20,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PreferredPronouns)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LevelOfStudy)
@@ -50,9 +47,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PreferredPronouns)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LevelOfStudy)

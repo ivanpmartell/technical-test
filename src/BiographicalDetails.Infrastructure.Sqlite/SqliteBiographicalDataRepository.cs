@@ -1,22 +1,23 @@
 ﻿using System.Data;
+using System.Security.Cryptography.Xml;
 using BiographicalDetails.Domain;
 using BiographicalDetails.Domain.Abstractions;
 using BiographicalDetails.EntityModels;
 using BiographicalDetails.EntityModels.Abstractions;
 using BiographicalDetails.EntityModels.Mappers;
-using BiographicalDetails.Infrastructure.InMemory.Contexts;
-using BiographicalDetails.Infrastructure.InMemory.Errors;
+using BiographicalDetails.Infrastructure.Sqlite.Contexts;
+using BiographicalDetails.Infrastructure.Sqlite.Errors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace BiographicalDetails.Infrastructure.InMemory;
+namespace BiographicalDetails.Infrastructure.Sqlite;
 
-public class InMemoryBiographicalDataRepository : IBiographicalDataRepository
+public class SqliteBiographicalDataRepository : IBiographicalDataRepository
 {
 	private readonly BiographicalDataDbContext _context;
 	private readonly IBiographicalDataMapper _mapper;
 
-	public InMemoryBiographicalDataRepository(BiographicalDataDbContext context, IBiographicalDataMapper mapper)
+	public SqliteBiographicalDataRepository(BiographicalDataDbContext context, IBiographicalDataMapper mapper)
 	{
 		_context = context;
 		_mapper = mapper;
@@ -24,30 +25,41 @@ public class InMemoryBiographicalDataRepository : IBiographicalDataRepository
 	public async Task<BiographicalData?> AddAsync(BiographicalData biographicalData)
 	{
 		if (biographicalData is null)
-			throw new NullReferenceException(InMemoryBiographicalDataRepositoryErrors.BiographicalData_IsNull);
+			throw new NullReferenceException(SqliteBiographicalDataRepositoryErrors.BiographicalData_IsNull);
 
-		var user = _mapper.MapToUser(biographicalData);
+		var user = _mapper.MapToUserWithoutId(biographicalData);
 		var addedUser = await _context.AddAsync(user);
+
+		var userRowsAffected = await _context.SaveChangesAsync();
+		if (userRowsAffected == 0 || addedUser is null)
+			return null;
+
+		var addedPartialBiographicalData = _mapper.MapFrom(addedUser.Entity);
 
 		EntityEntry<UserPronounEntity>? addedPronouns = null;
 		if (biographicalData.PreferredPronouns is not null)
 		{
-			var pronouns = _mapper.MapToUserPronouns(biographicalData);
+			addedPartialBiographicalData.PreferredPronouns = biographicalData.PreferredPronouns;
+
+			var pronouns = _mapper.MapToUserPronouns(addedPartialBiographicalData);
 			addedPronouns = await _context.AddAsync(pronouns);
 		}
 
 		EntityEntry<UserSinEntity>? addedSin = null;
 		if (biographicalData.SocialInsuranceNumber is not null)
 		{
-			var sin = _mapper.MapToUserSIN(biographicalData);
+			addedPartialBiographicalData.SocialInsuranceNumber = biographicalData.SocialInsuranceNumber;
+
+			var sin = _mapper.MapToUserSIN(addedPartialBiographicalData);
 			addedSin = await _context.AddAsync(sin);
 		}
 
-		EntityEntry<UserUciEntity>? addedUci = null;
 		if (biographicalData.UniqueClientIdentifier is not null)
 		{
-			var uci = _mapper.MapToUserUCI(biographicalData);
-			addedUci = await _context.AddAsync(uci);
+			addedPartialBiographicalData.UniqueClientIdentifier = biographicalData.UniqueClientIdentifier;
+
+			var uci = _mapper.MapToUserUCI(addedPartialBiographicalData);
+			await _context.AddAsync(uci);
 		}
 		
 		var rowsAffected = await _context.SaveChangesAsync();
@@ -55,7 +67,7 @@ public class InMemoryBiographicalDataRepository : IBiographicalDataRepository
 		if (rowsAffected == 0)
 			return null;
 
-		return _mapper.MapFrom(addedUser.Entity, addedPronouns?.Entity, addedSin?.Entity, addedUci?.Entity);
+		return addedPartialBiographicalData;
 	}
 
 	public async Task<bool> DeleteAsync(int biographicalDataId)
@@ -120,7 +132,7 @@ public class InMemoryBiographicalDataRepository : IBiographicalDataRepository
 	public async Task<bool> UpdateAsync(BiographicalData biographicalData)
 	{
 		if (biographicalData is null)
-			throw new NullReferenceException(InMemoryBiographicalDataRepositoryErrors.BiographicalData_IsNull);
+			throw new NullReferenceException(SqliteBiographicalDataRepositoryErrors.BiographicalData_IsNull);
 
 		var userInDb = await _context.Users.FindAsync(biographicalData.Id);
 		if (userInDb is null)

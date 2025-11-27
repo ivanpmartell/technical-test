@@ -4,12 +4,13 @@
     <Project Path="src/BiographicalDetails.Domain/BiographicalDetails.Domain.csproj" Id="9b523a88-7ec7-461b-8ea3-29fe5cab8b1e" />
     <Project Path="src/BiographicalDetails.EntityModels/BiographicalDetails.EntityModels.csproj" />
     <Project Path="src/BiographicalDetails.Infrastructure.Sql/BiographicalDetails.Infrastructure.Sql.csproj" Id="1944335f-790f-47eb-859f-f1fd0ae40252" />
-    <Project Path="src/BiographicalDetails.Infrastructure/BiographicalDetails.Infrastructure.InMemory.csproj" Id="ef35b815-8ce5-4d32-9808-d4abe9721fcc" />
+    <Project Path="src/BiographicalDetails.Infrastructure.Sqlite/BiographicalDetails.Infrastructure.Sqlite.csproj" />
     <Project Path="src/BiographicalDetails.Website/BiographicalDetails.Website.csproj" Id="4418f9ca-6c15-4ceb-916d-18dd9e0e3448" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BiographicalDetails.Integration.Tests/BiographicalDetails.Integration.Tests.csproj" Id="ddda847c-6842-489e-9885-2a671089a279" />
     <Project Path="tests/BiographicalDetails.TestInfrastructure.Sql/BiographicalDetails.TestInfrastructure.Sql.csproj" Id="ea9ce005-6ead-4693-bd54-6914620fe2c3" />
+    <Project Path="tests/BiographicalDetails.TestInfrastructure.Sqlite/BiographicalDetails.TestInfrastructure.Sqlite.csproj" Id="9795233f-677a-49e5-a361-bfedad42936f" />
     <Project Path="tests/BiographicalDetails.Unit.Tests/BiographicalDetails.Unit.Tests.csproj" />
   </Folder>
 </Solution>

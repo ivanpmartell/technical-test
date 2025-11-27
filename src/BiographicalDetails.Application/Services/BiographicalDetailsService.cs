@@ -19,17 +19,17 @@ public class BiographicalDetailsService
 	{
 		_biographicalDetailsValidator.ValidateData(biographicalData);
 
-		await _biographicalDetailsRepository.AddAsync(biographicalData);
+		var addedBiographicalData = await _biographicalDetailsRepository.AddAsync(biographicalData);
 
-		return biographicalData;
+		if (addedBiographicalData is null)
+			throw new KeyNotFoundException(BiographicalDetailsErrors.BiographicalDetails_NotAdded);
+
+		return addedBiographicalData;
 	}
 
-	public async Task<BiographicalData> GetBiographicalInfoAsync(int biographicalDataId)
+	public async Task<BiographicalData?> GetBiographicalInfoAsync(int biographicalDataId)
 	{
 		var result = await _biographicalDetailsRepository.GetAsync(biographicalDataId);
-
-		if (result is null)
-			throw new KeyNotFoundException(BiographicalDetailsErrors.BiographicalDetails_NotFound);
 
 		return result;
 	}
@@ -49,25 +49,22 @@ public class BiographicalDetailsService
 		_biographicalDetailsValidator.ValidateData(updatedBiographicalData);
 
 		var currentBiographicalData = await GetBiographicalInfoAsync(updatedBiographicalData.Id);
+		if (currentBiographicalData is null)
+			return false;
 
 		if (currentBiographicalData.SocialInsuranceNumber is not null &&
 				currentBiographicalData.SocialInsuranceNumber != updatedBiographicalData.SocialInsuranceNumber)
-			throw new InvalidOperationException(BiographicalDetailsErrors.AlreadySet_SIN_CannotUpdate);
+			throw new SINException(BiographicalDetailsErrors.AlreadySet_SIN_CannotUpdate);
 
 		if (currentBiographicalData.UniqueClientIdentifier is not null &&
 			currentBiographicalData.UniqueClientIdentifier != updatedBiographicalData.UniqueClientIdentifier)
-			throw new InvalidOperationException(BiographicalDetailsErrors.AlreadySet_UCI_CannotUpdate);
+			throw new UCIException(BiographicalDetailsErrors.AlreadySet_UCI_CannotUpdate);
 
 		return await _biographicalDetailsRepository.UpdateAsync(updatedBiographicalData);
 	}
 
 	public async Task<bool> DeleteBiographicalInfoAsync(int biographicalDataId)
 	{
-		var result = await _biographicalDetailsRepository.DeleteAsync(biographicalDataId);
-
-		if (!result)
-			throw new KeyNotFoundException(BiographicalDetailsErrors.BiographicalDetails_NotFound);
-
-		return result;
+		return await _biographicalDetailsRepository.DeleteAsync(biographicalDataId);
 	}
 }

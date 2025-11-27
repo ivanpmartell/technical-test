@@ -1,6 +1,6 @@
 ﻿using static System.Environment;
 
-namespace BiographicalDetails.Infrastructure.Sql.Contexts.Loggers;
+namespace BiographicalDetails.TestInfrastructure.Sql.Loggers;
 
 public static class BiographicalDataTestLogger
 {

@@ -5,6 +5,7 @@ namespace BiographicalDetails.EntityModels.Abstractions;
 public interface IBiographicalDataMapper
 {
 	public UserEntity MapToUser(BiographicalData domainModel);
+	public UserEntity MapToUserWithoutId(BiographicalData domainModel);
 	public UserPronounEntity MapToUserPronouns(BiographicalData domainModel);
 	public UserSinEntity MapToUserSIN(BiographicalData domainModel);
 	public UserUciEntity MapToUserUCI(BiographicalData domainModel);

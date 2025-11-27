@@ -3,13 +3,15 @@ using BiographicalDetails.Application.Validators;
 using BiographicalDetails.Domain.Abstractions;
 using BiographicalDetails.EntityModels.Abstractions;
 using BiographicalDetails.EntityModels.Mappers;
-using BiographicalDetails.Infrastructure.InMemory;
+using BiographicalDetails.Infrastructure.Sqlite;
+using BiographicalDetails.Infrastructure.Sqlite.Contexts.Extensions;
 using BiographicalDetails.Infrastructure.Sql;
 using BiographicalDetails.Infrastructure.Sql.Contexts.Extensions;
 using BiographicalDetails.Website.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using BiographicalDetails.Website.Models.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,23 +23,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Our services
-var biographicalDataConnectionString = builder.Configuration.GetConnectionString("BiographicalDataConnection")
-	?? throw new InvalidOperationException("Connection string 'BiographicalDataConnection' not found.");
+var biographicalDataConnectionString = builder.Configuration.GetConnectionString("BiographicalDataSqlConnection")
+	?? throw new InvalidOperationException("Connection string 'BiographicalDataSqlConnection' not found.");
 SqlConnectionStringBuilder sql = new(biographicalDataConnectionString);
 sql.IntegratedSecurity = false;
 sql.UserID = Environment.GetEnvironmentVariable("MY_SQL_USR");
 sql.Password = Environment.GetEnvironmentVariable("MY_SQL_PWD");
+
 builder.Services.AddBiographicalDetailsSqlContext(sql.ConnectionString);
-
 builder.Services.AddScoped<IBiographicalDataRepository, SqlBiographicalDataRepository>();
-// Can also change to In memory database (different db schema)
-//builder.Services.AddScoped<IBiographicalDataRepository, InMemoryBiographicalDataRepository>();
 
-builder.Services.AddScoped<IBiographicalDataMapper, BiographicalDataMapper>();
+
+// Can also change to Sqlite database (different db schema)
+//builder.Services.AddBiographicalDetailsSqliteContext(); // Database created in users "Desktop" by default
+//builder.Services.AddScoped<IBiographicalDataRepository, SqliteBiographicalDataRepository>();
+
+builder.Services.AddScoped<IBiographicalDataMapper, BiographicalDataEntityMapper>();
 builder.Services.AddScoped<IValidatorSIN, SINValidator>();
 builder.Services.AddScoped<IValidatorUCI, UCIValidator>();
 builder.Services.AddScoped<IBiographicalDataValidator, BiographicalDataValidator>();
 builder.Services.AddScoped<BiographicalDetailsService>();
+builder.Services.AddScoped<BiographicalDataRequestsMapper>();
 // End of our services
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
