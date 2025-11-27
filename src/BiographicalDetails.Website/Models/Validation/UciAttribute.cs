@@ -5,9 +5,6 @@ namespace BiographicalDetails.Website.Models.Validation;
 
 public class UciAttribute : ValidationAttribute
 {
-	public const string FormatErrorMsg = "Unique client identifier must have the following format: 0000-0000 or 00-0000-0000";
-	public const string InvalidErrorMsg = "Unique client identifier is invalid.";
-
 	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
 		var uci = ((BiographicalDetailsModel)validationContext.ObjectInstance).UniqueClientIdentifier;

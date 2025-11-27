@@ -6,9 +6,6 @@ namespace BiographicalDetails.Website.Models.Validation;
 
 public class SinAttribute : ValidationAttribute
 {
-	public const string FormatErrorMsg = "Social insurance number must have the following format: 000-000-000";
-	public const string InvalidErrorMsg = "Social insurance number is invalid.";
-
 	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
 		var sin = ((BiographicalDetailsModel)validationContext.ObjectInstance).SocialInsuranceNumber;
