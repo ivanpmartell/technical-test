@@ -55,12 +55,12 @@
             </div>
             <div id="socialInsuranceNumberGroup" class="form-group">
                 <label asp-for="SocialInsuranceNumber" class="control-label"></label>
-                <input asp-for="SocialInsuranceNumber" class="form-control" />
+                <input asp-for="SocialInsuranceNumber" class="form-control" onchange="loadVisibility()" />
                 <span asp-validation-for="SocialInsuranceNumber" class="text-danger"></span>
             </div>
             <div id="uniqueClientIdentifierGroup" class="form-group">
-                <label asp-for="UniqueClientIdentifier" class="control-label"></label>
-                <input asp-for="UniqueClientIdentifier" class="form-control" />
+                <label asp-for="UniqueClientIdentifier" class="control-label" ></label>
+                <input asp-for="UniqueClientIdentifier" class="form-control" onchange="loadVisibility()" />
                 <span asp-validation-for="UniqueClientIdentifier" class="text-danger"></span>
             </div>
             <div class="form-group">

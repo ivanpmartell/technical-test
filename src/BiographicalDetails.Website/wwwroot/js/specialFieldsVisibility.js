@@ -32,7 +32,7 @@ function toggleSpecialFields(immigrationStatus) {
       changeVisibility(false, true);
       break;
     default:
-      changeVisibility(true, true);
+      changeVisibility(false, false);
       break;
   }
 }
