@@ -48,7 +48,7 @@ function setElementVisibility(element, visibility) {
 
 
 
-function loadVisibility(){
+function loadVisibility() {
   toggleSpecialFields($('select#ImmigrationStatus')[0].value)
     
   let sinElement = $('#socialInsuranceNumberGroup');
@@ -73,10 +73,26 @@ function shouldElementDisplay(fieldName) {
 }
 
 function isStringNullOrEmpty(str) {
-    if (str == null)
-        return true;
-    return str === ''
+  if (str == null)
+    return true;
+  return str === ''
 }
 
+function loadReadOnlyFields() {
+    makeReadOnlyIfHasValue('SocialInsuranceNumber');
+    makeReadOnlyIfHasValue('UniqueClientIdentifier');
+}
+
+function makeReadOnlyIfHasValue(fieldName) {
+  let inputElement = $(`input#${fieldName}`)[0];
+  if (inputElement != null) {
+    if (!isStringNullOrEmpty(inputElement.value)) {
+      inputElement.readOnly = true;
+    }
+  }
+}
+
+
 //Run on page load
+loadReadOnlyFields();
 loadVisibility();
