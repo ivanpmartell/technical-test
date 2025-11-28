@@ -3,6 +3,7 @@
     <Project Path="src/BiographicalDetails.Application/BiographicalDetails.Application.csproj" Id="12746769-f239-46dc-bcda-2dc93d41725f" />
     <Project Path="src/BiographicalDetails.Domain/BiographicalDetails.Domain.csproj" Id="9b523a88-7ec7-461b-8ea3-29fe5cab8b1e" />
     <Project Path="src/BiographicalDetails.EntityModels/BiographicalDetails.EntityModels.csproj" />
+    <Project Path="src/BiographicalDetails.Helpers/BiographicalDetails.Helpers.csproj" Id="3a26468a-2e25-4c00-ab49-d04a7611ee48" />
     <Project Path="src/BiographicalDetails.Infrastructure.Sql/BiographicalDetails.Infrastructure.Sql.csproj" Id="1944335f-790f-47eb-859f-f1fd0ae40252" />
     <Project Path="src/BiographicalDetails.Infrastructure.Sqlite/BiographicalDetails.Infrastructure.Sqlite.csproj" />
     <Project Path="src/BiographicalDetails.Website/BiographicalDetails.Website.csproj" Id="4418f9ca-6c15-4ceb-916d-18dd9e0e3448" />

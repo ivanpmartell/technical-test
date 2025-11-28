@@ -1,4 +1,5 @@
-﻿using static System.Environment;
+﻿using BiographicalDetails.Helpers;
+using static System.Environment;
 
 namespace BiographicalDetails.Infrastructure.Sqlite.Contexts.Loggers;
 
@@ -13,9 +14,6 @@ public static class BiographicalDataLogger
 		string dateTimeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 		string path = Path.Combine(folder, $"BiographicalDataLog-{dateTimeStamp}.txt");
 
-		using (StreamWriter textFile = File.AppendText(path))
-		{
-			textFile.WriteLine(message);
-		}
+		ThreadSafeTextFileWriter.WriteText(path, message);
 	}
 }

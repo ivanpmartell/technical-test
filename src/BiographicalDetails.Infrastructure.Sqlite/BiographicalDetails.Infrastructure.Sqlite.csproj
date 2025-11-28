@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+      <ProjectReference Include="..\..\tests\BiographicalDetailsTests.Helpers\BiographicalDetailsTests.Helpers.csproj" />
       <ProjectReference Include="..\BiographicalDetails.EntityModels\BiographicalDetails.EntityModels.csproj" />
+      <ProjectReference Include="..\BiographicalDetails.Helpers\BiographicalDetails.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

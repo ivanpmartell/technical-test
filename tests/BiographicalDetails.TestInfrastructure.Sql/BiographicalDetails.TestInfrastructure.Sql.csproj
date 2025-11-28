@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BiographicalDetails.Infrastructure.Sql\BiographicalDetails.Infrastructure.Sql.csproj" />
+    <ProjectReference Include="..\BiographicalDetailsTests.Helpers\BiographicalDetailsTests.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

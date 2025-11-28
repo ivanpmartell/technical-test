@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BiographicalDetails.Infrastructure.Sqlite\BiographicalDetails.Infrastructure.Sqlite.csproj" />
+    <ProjectReference Include="..\BiographicalDetailsTests.Helpers\BiographicalDetailsTests.Helpers.csproj" />
   </ItemGroup>
 
 </Project>
