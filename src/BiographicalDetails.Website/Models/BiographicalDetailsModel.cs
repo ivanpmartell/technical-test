@@ -25,7 +25,6 @@ public class BiographicalDetailsModel
 	[DisplayName("Email")]
 	public required string Email { get; set; }
 
-	[Required]
 	[MaxLength(50)]
 	[DisplayName("Preferred pronouns")]
 	public string? PreferredPronouns { get; set; }

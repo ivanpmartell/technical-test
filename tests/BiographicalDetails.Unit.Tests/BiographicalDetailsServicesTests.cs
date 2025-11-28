@@ -4,6 +4,7 @@ using BiographicalDetails.Application.Services;
 using BiographicalDetails.Application.Validators;
 using BiographicalDetails.Domain;
 using BiographicalDetails.Domain.Abstractions;
+using BiographicalDetailsTests.Helpers;
 using Moq;
 
 namespace BiographicalDetails.Unit.Tests;
@@ -21,7 +22,7 @@ public class BiographicalDetailsServicesTests
 		_biographicalDetailsService = new BiographicalDetailsService(_biographicalDetailsRepositoryMock.Object, _biographicalDetailsValidator);
 	}
 
-	#region SAVE
+	#region ADD
 
 	[Fact]
 	public async Task SaveBiographicalInfo_WithValidData_ShouldCreateBiographicalData()
@@ -56,12 +57,8 @@ public class BiographicalDetailsServicesTests
 		Assert.Equal(submission.UniqueClientIdentifier, result.UniqueClientIdentifier);
 	}
 
-	[Theory]//TODO class data for sin requiring and uci requiring
-	[InlineData(ImmigrationStatus.CanadianCitizen)]
-	[InlineData(ImmigrationStatus.PermanentResident)]
-	[InlineData(ImmigrationStatus.TemporaryForeignWorker)]
-	[InlineData(ImmigrationStatus.ProtectedPerson)]
-	[InlineData(ImmigrationStatus.Indigenous)]
+	[Theory]
+	[ClassData(typeof(ImmigrationStatusRequiringSINTestData))]
 	public async Task SaveBiographicalInfo_WhenImmigrationStatusChosenRequiringSIN_ShouldThrowException(ImmigrationStatus status)
 	{
 		//Arrange
@@ -86,11 +83,7 @@ public class BiographicalDetailsServicesTests
 	}
 
 	[Theory]
-	[InlineData(ImmigrationStatus.PermanentResident)]
-	[InlineData(ImmigrationStatus.TemporaryForeignWorker)]
-	[InlineData(ImmigrationStatus.InternationalStudent)]
-	[InlineData(ImmigrationStatus.ProtectedPerson)]
-	[InlineData(ImmigrationStatus.Visitor)]
+	[ClassData(typeof(ImmigrationStatusRequiringUCITestData))]
 	public async Task SaveBiographicalInfo_WhenImmigrationStatusChosenRequiringUCI_ShouldThrowException(ImmigrationStatus status)
 	{
 		//Arrange
@@ -645,7 +638,6 @@ public class BiographicalDetailsServicesTests
 	}
 
 	#endregion UPDATE
-
 
 	#region DELETE
 

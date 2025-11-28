@@ -1,5 +1,6 @@
 ﻿using BiographicalDetails.Domain;
 using BiographicalDetails.Website.Models.Enums;
+using BiographicalDetails.Website.Models.ViewModels;
 
 namespace BiographicalDetails.Website.Models.Mappers;
 
@@ -30,7 +31,7 @@ public class BiographicalDataRequestsMapper
 			FirstName = biographicalDetailsModel.FirstName,
 			LastName = biographicalDetailsModel.LastName,
 			Email = biographicalDetailsModel.Email,
-			PreferredPronouns = biographicalDetailsModel.PreferredPronouns,
+			PreferredPronouns = EnsureNullIfEmpty(biographicalDetailsModel.PreferredPronouns),
 			LevelOfStudy = (Domain.LevelOfStudy)biographicalDetailsModel.LevelOfStudy,
 			ImmigrationStatus = (Domain.ImmigrationStatus)biographicalDetailsModel.ImmigrationStatus,
 			SocialInsuranceNumber = EnsureNullIfEmpty(biographicalDetailsModel.SocialInsuranceNumber),
@@ -45,13 +46,29 @@ public class BiographicalDataRequestsMapper
 			null : value;
 	}
 
-	public ICollection<BiographicalDetailsModel> MapToBiographicalDetailsViewModelCollection(ICollection<BiographicalData> domainModelCollection)
+	public SubmissionViewModel MapToSubmissionViewModel(BiographicalData domainModel)
 	{
-		var biographicalDetailsViewModelCollection = new List<BiographicalDetailsModel>();
+		var submissionViewModel = new SubmissionViewModel
+		{
+			Id = domainModel.Id,
+			FirstName = domainModel.FirstName,
+			LastName = domainModel.LastName,
+			Email = domainModel.Email,
+			LevelOfStudy = (Enums.LevelOfStudy)domainModel.LevelOfStudy,
+			ImmigrationStatus = (Enums.ImmigrationStatus)domainModel.ImmigrationStatus,
+			SocialInsuranceNumber = domainModel.SocialInsuranceNumber,
+			UniqueClientIdentifier = domainModel.UniqueClientIdentifier
+		};
+		return submissionViewModel;
+	}
+
+	public IEnumerable<SubmissionViewModel> MapToBiographicalDetailsSubmissionList(ICollection<BiographicalData> domainModelCollection)
+	{
+		var submissionList = new List<SubmissionViewModel>();
 		foreach (var item in domainModelCollection)
 		{
-			biographicalDetailsViewModelCollection.Add(MapToBiographicalDetailsViewModel(item));
+			submissionList.Add(MapToSubmissionViewModel(item));
 		}
-		return biographicalDetailsViewModelCollection;
+		return submissionList;
 	}
 }

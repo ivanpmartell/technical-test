@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\BiographicalDetails.Application\BiographicalDetails.Application.csproj" />
     <ProjectReference Include="..\..\src\BiographicalDetails.Domain\BiographicalDetails.Domain.csproj" />
+    <ProjectReference Include="..\BiographicalDetailsTests.Helpers\BiographicalDetailsTests.Helpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

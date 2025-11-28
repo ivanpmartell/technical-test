@@ -20,7 +20,7 @@ function toggleSpecialFields(immigrationStatus) {
       changeVisibility(true, true);
       break;
     case immigrationStatusDict.InternationalStudent:
-      changeVisibility(true, true);
+      changeVisibility(false, true);
       break;
     case immigrationStatusDict.ProtectedPerson:
       changeVisibility(true, true);

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BiographicalDetails.Domain;
 using BiographicalDetails.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using BiographicalDetails.Website.Models;
@@ -24,8 +23,8 @@ public class BiographicalDetailsController : Controller
     public async Task<IActionResult> Index()
     {
 		var result = await _service.GetAllBiographicalInfosAsync();
-        var biographicalDataCollection = _mapper.MapToBiographicalDetailsViewModelCollection(result);
-		return View(biographicalDataCollection);
+        var submissionsList = _mapper.MapToBiographicalDetailsSubmissionList(result);
+		return View(submissionsList);
     }
 
     // GET: BiographicalData/Details/5

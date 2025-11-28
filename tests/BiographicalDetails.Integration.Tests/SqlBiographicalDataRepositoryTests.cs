@@ -68,7 +68,7 @@ public class SqlBiographicalDataRepositoryTests : IClassFixture<SqlDatabaseFixtu
 			FirstName = "Ivan",
 			LastName = "Perez",
 			Email = "ivan@test.com",
-			PreferredPronouns = "He/Him",
+			PreferredPronouns = "",
 			LevelOfStudy = LevelOfStudy.SomeCollege,
 			ImmigrationStatus = ImmigrationStatus.Visitor,
 			SocialInsuranceNumber = null,

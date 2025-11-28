@@ -65,7 +65,7 @@ public class SqliteBiographicalDataRepositoryTests : IClassFixture<SqliteDatabas
 			FirstName = "Ivan",
 			LastName = "Perez",
 			Email = "ivan@test.com",
-			PreferredPronouns = "He/Him",
+			PreferredPronouns = "",
 			LevelOfStudy = LevelOfStudy.SomeCollege,
 			ImmigrationStatus = ImmigrationStatus.Visitor,
 			SocialInsuranceNumber = null,
@@ -78,9 +78,20 @@ public class SqliteBiographicalDataRepositoryTests : IClassFixture<SqliteDatabas
 
 		//Assert
 		Assert.NotNull(addedBiographicalData);
-		var dataInDb = await _dbFixture.context.FindAsync<UserEntity>(addedBiographicalData.Id);
-		Assert.NotNull(dataInDb);
-		Assert.Equal(dataInDb.Id, addedBiographicalData.Id);
+		var userInDb = await _dbFixture.context.FindAsync<UserEntity>(addedBiographicalData.Id);
+		Assert.NotNull(userInDb);
+		Assert.Equal(userInDb.Id, addedBiographicalData.Id);
+
+		var pronounsInDb = await _dbFixture.context.UserPronouns.FirstOrDefaultAsync();
+		Assert.NotNull(pronounsInDb);
+		Assert.Equal(pronounsInDb.PreferredPronouns, addedBiographicalData.PreferredPronouns);
+
+		var sinInDb = await _dbFixture.context.UserSins.FirstOrDefaultAsync();
+		Assert.Null(sinInDb);
+
+		var uciInDb = await _dbFixture.context.UserUcis.FirstOrDefaultAsync();
+		Assert.NotNull(uciInDb);
+		Assert.Equal(uciInDb.UniqueClientIdentifier, addedBiographicalData.UniqueClientIdentifier);
 	}
 
 	[Fact]
