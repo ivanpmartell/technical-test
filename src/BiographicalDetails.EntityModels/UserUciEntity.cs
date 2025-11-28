@@ -9,7 +9,6 @@ public class UserUciEntity
 	public int Id { get; set; }
 
 	[Required]
-	[ForeignKey(nameof(UserEntity))]
 	public int UserId { get; set; }
 
 	[Required]

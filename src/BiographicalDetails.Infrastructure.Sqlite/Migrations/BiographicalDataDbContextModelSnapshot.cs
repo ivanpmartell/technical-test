@@ -63,6 +63,9 @@ namespace BiographicalDetails.Infrastructure.Sqlite.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("UserPronouns");
                 });
 
@@ -80,6 +83,9 @@ namespace BiographicalDetails.Infrastructure.Sqlite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("UserSins");
                 });
@@ -99,7 +105,37 @@ namespace BiographicalDetails.Infrastructure.Sqlite.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("UserUcis");
+                });
+
+            modelBuilder.Entity("BiographicalDetails.EntityModels.UserPronounEntity", b =>
+                {
+                    b.HasOne("BiographicalDetails.EntityModels.UserEntity", null)
+                        .WithOne()
+                        .HasForeignKey("BiographicalDetails.EntityModels.UserPronounEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BiographicalDetails.EntityModels.UserSinEntity", b =>
+                {
+                    b.HasOne("BiographicalDetails.EntityModels.UserEntity", null)
+                        .WithOne()
+                        .HasForeignKey("BiographicalDetails.EntityModels.UserSinEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BiographicalDetails.EntityModels.UserUciEntity", b =>
+                {
+                    b.HasOne("BiographicalDetails.EntityModels.UserEntity", null)
+                        .WithOne()
+                        .HasForeignKey("BiographicalDetails.EntityModels.UserUciEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

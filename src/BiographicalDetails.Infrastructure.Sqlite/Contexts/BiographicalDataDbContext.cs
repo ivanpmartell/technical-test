@@ -29,6 +29,24 @@ public class BiographicalDataDbContext: DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		modelBuilder.Entity<UserEntity>()
+			.HasOne<UserPronounEntity>()
+			.WithOne()
+			.HasForeignKey<UserPronounEntity>(e => e.UserId)
+			.IsRequired();
+
+		modelBuilder.Entity<UserEntity>()
+			.HasOne<UserSinEntity>()
+			.WithOne()
+			.HasForeignKey<UserSinEntity>(e => e.UserId)
+			.IsRequired();
+
+		modelBuilder.Entity<UserEntity>()
+			.HasOne<UserUciEntity>()
+			.WithOne()
+			.HasForeignKey<UserUciEntity>(e => e.UserId)
+			.IsRequired();
+
 		base.OnModelCreating(modelBuilder);
 	}
 }
