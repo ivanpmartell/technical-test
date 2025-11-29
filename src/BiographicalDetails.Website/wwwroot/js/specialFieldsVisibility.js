@@ -69,6 +69,10 @@ function shouldElementDisplay(fieldName) {
       }
   }
 
+  return fieldHasError(fieldName);
+}
+
+function fieldHasError(fieldName) {
   return $(`span[data-valmsg-for=${fieldName}].field-validation-error`).length > 0;
 }
 

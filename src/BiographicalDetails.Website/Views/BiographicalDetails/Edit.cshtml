@@ -77,5 +77,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="/js/specialFieldsVisibility.js"></script>
+    <script src="/js/specialFieldsVisibility.js" asp-append-version="true"></script>
+    <script src="/js/specialFieldsReadonly.js" asp-append-version="true"></script>
 }
