@@ -115,7 +115,7 @@ public class BiographicalDetailsController : Controller
             catch (UCIException ex)
             {
                 ModelState.AddModelError(nameof(submission.UniqueClientIdentifier), ex.Message);
-            }
+			}
 		}
 
         return View(submission);

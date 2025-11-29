@@ -69,7 +69,7 @@ function shouldElementDisplay(fieldName) {
       }
   }
 
-  return $(`span[data-valmsg-for=${fieldName}].field-validation-error:visible`).length > 0;
+  return $(`span[data-valmsg-for=${fieldName}].field-validation-error`).length > 0;
 }
 
 function isStringNullOrEmpty(str) {
@@ -78,21 +78,5 @@ function isStringNullOrEmpty(str) {
   return str === ''
 }
 
-function loadReadOnlyFields() {
-    makeReadOnlyIfHasValue('SocialInsuranceNumber');
-    makeReadOnlyIfHasValue('UniqueClientIdentifier');
-}
-
-function makeReadOnlyIfHasValue(fieldName) {
-  let inputElement = $(`input#${fieldName}`)[0];
-  if (inputElement != null) {
-    if (!isStringNullOrEmpty(inputElement.value)) {
-      inputElement.readOnly = true;
-    }
-  }
-}
-
-
 //Run on page load
-loadReadOnlyFields();
 loadVisibility();
