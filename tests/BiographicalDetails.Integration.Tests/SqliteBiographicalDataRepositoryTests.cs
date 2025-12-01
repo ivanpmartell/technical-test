@@ -2,10 +2,10 @@
 using BiographicalDetails.EntityModels;
 using BiographicalDetails.EntityModels.Abstractions;
 using BiographicalDetails.EntityModels.Mappers;
+using BiographicalDetails.Helpers;
 using BiographicalDetails.Infrastructure.Sqlite;
 using BiographicalDetails.Infrastructure.Sqlite.Contexts;
 using BiographicalDetails.Infrastructure.Sqlite.Contexts.Extensions;
-using BiographicalDetails.Infrastructure.Sqlite.Contexts.Loggers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BiographicalDetails.Integration.Tests;
@@ -19,14 +19,19 @@ public class SqliteDatabaseFixture : IDisposable
 	public SqliteDatabaseFixture()
 	{
 		var dbName = $"BiographicalDetails_Tests";
+		var logger = new BiographicalDataLogger();
+		logger.FolderName = "sqlite-logs-tests";
 
 		var options = new DbContextOptionsBuilder<BiographicalDataDbContext>()
 			.UseSqlite(BiographicalDataContextExtensions.DefaultConnectionString(dbName))
-			.LogTo(BiographicalDataLogger.WriteLine,
+			.LogTo(logger.WriteLine,
 			  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting])
 			.Options;
 
 		context = new BiographicalDataDbContext(options);
+		context.Database.EnsureDeleted();
+		context.Database.Migrate();
+
 		mapper = new BiographicalDataEntityMapper();
 		sqLiteRepository = new SqliteBiographicalDataRepository(context, mapper);
 	}

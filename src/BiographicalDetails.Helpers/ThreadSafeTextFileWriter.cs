@@ -2,21 +2,16 @@
 {
 	public static class ThreadSafeTextFileWriter
 	{
-		private static ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
+		private static readonly Lock _lock = new();
 
 		public static void WriteText(string path, string message)
 		{
-			_readWriteLock.EnterWriteLock();
-			try
+			lock (_lock)
 			{
-				using (StreamWriter textFile = File.AppendText(path))
+				using (StreamWriter textFile = new StreamWriter(path, true))
 				{
 					textFile.WriteLine(message);
 				}
-			}
-			finally
-			{
-				_readWriteLock.ExitWriteLock();
 			}
 		}
 	}

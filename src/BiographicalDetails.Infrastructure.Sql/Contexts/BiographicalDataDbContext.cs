@@ -1,6 +1,6 @@
 ﻿using BiographicalDetails.Domain;
+using BiographicalDetails.Helpers;
 using BiographicalDetails.Infrastructure.Sql.Contexts.Extensions;
-using BiographicalDetails.Infrastructure.Sql.Contexts.Loggers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BiographicalDetails.Infrastructure.Sql.Contexts;
@@ -18,8 +18,11 @@ public class BiographicalDataDbContext : DbContext
 	{
 		if (!optionsBuilder.IsConfigured)
 		{
+			var logger = new BiographicalDataLogger();
+			logger.FolderName = "sql-logs";
+
 			optionsBuilder.UseSqlServer(BiographicalDataContextExtensions.DefaultConnectionString("BiographicalDetails"));
-			optionsBuilder.LogTo(BiographicalDataLogger.WriteLine,
+			optionsBuilder.LogTo(logger.WriteLine,
 				  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting]);
 		}
 	}

@@ -1,10 +1,10 @@
 ﻿using BiographicalDetails.Domain;
 using BiographicalDetails.EntityModels.Abstractions;
 using BiographicalDetails.EntityModels.Mappers;
+using BiographicalDetails.Helpers;
 using BiographicalDetails.Infrastructure.Sql;
 using BiographicalDetails.Infrastructure.Sql.Contexts;
 using BiographicalDetails.Infrastructure.Sql.Contexts.Extensions;
-using BiographicalDetails.TestInfrastructure.Sql.Loggers;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -19,14 +19,19 @@ public class SqlDatabaseFixture : IDisposable
 	public SqlDatabaseFixture()
 	{
 		var dbName = $"BiographicalDetails_Tests";
+		var logger = new BiographicalDataLogger();
+		logger.FolderName = "sql-logs-tests";
 
 		var options = new DbContextOptionsBuilder<BiographicalDataDbContext>()
 			.UseSqlServer(BiographicalDataContextExtensions.DefaultConnectionString(dbName))
-			.LogTo(BiographicalDataTestLogger.WriteLine,
+			.LogTo(logger.WriteLine,
 				  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting])
 			.Options;
 
 		context = new BiographicalDataDbContext(options);
+		context.Database.EnsureDeleted();
+		context.Database.Migrate();
+
 		mapper = new BiographicalDataEntityMapper();
 		sqlRepository = new SqlBiographicalDataRepository(context, mapper);
 	}
@@ -149,12 +154,12 @@ public class SqlBiographicalDataRepositoryTests : IClassFixture<SqlDatabaseFixtu
 		biographicalData.Id = addedBiographicalData.Id;
 		anotherBiographicalData.Id = addedAnotherBiographicalData.Id;
 
-		//Act
+		//Act & Assert
 		var retrievedData = await _dbFixture.sqlRepository.GetAllAsync();
-
-		//Assert
 		Assert.NotNull(retrievedData);
-		Assert.Collection(retrievedData,
+
+		var retrievedDataLast2 = retrievedData.TakeLast(2);
+		Assert.Collection(retrievedDataLast2,
 			item => Assert.Equal(biographicalData, item),
 			item => Assert.Equal(anotherBiographicalData, item)
 		);

@@ -10,9 +10,8 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BiographicalDetails.Integration.Tests/BiographicalDetails.Integration.Tests.csproj" Id="ddda847c-6842-489e-9885-2a671089a279" />
-    <Project Path="tests/BiographicalDetails.TestInfrastructure.Sql/BiographicalDetails.TestInfrastructure.Sql.csproj" Id="ea9ce005-6ead-4693-bd54-6914620fe2c3" />
-    <Project Path="tests/BiographicalDetails.TestInfrastructure.Sqlite/BiographicalDetails.TestInfrastructure.Sqlite.csproj" Id="9795233f-677a-49e5-a361-bfedad42936f" />
     <Project Path="tests/BiographicalDetails.Unit.Tests/BiographicalDetails.Unit.Tests.csproj" />
+    <Project Path="tests/BiographicalDetails.Website.Tests/BiographicalDetails.Website.Tests.csproj" Id="52bce5ec-9b8b-4b1b-b0a8-435f2e321e38" />
     <Project Path="tests/BiographicalDetailsTests.Helpers/BiographicalDetailsTests.Helpers.csproj" Id="a1fe27be-93a6-45a6-9973-1ef385c3e77a" />
   </Folder>
 </Solution>

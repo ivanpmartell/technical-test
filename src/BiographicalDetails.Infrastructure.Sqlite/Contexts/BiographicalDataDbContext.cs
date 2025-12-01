@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BiographicalDetails.EntityModels;
-using BiographicalDetails.Infrastructure.Sqlite.Contexts.Loggers;
 using BiographicalDetails.Infrastructure.Sqlite.Contexts.Extensions;
+using BiographicalDetails.Helpers;
 
 namespace BiographicalDetails.Infrastructure.Sqlite.Contexts;
 
@@ -21,8 +21,11 @@ public class BiographicalDataDbContext: DbContext
 	{
 		if (!optionsBuilder.IsConfigured)
 		{
+			var logger = new BiographicalDataLogger();
+			logger.FolderName = "sqlite-logs";
+
 			optionsBuilder.UseSqlite(BiographicalDataContextExtensions.DefaultConnectionString("BiographicalDetails"));
-			optionsBuilder.LogTo(BiographicalDataLogger.WriteLine,
+			optionsBuilder.LogTo(logger.WriteLine,
 				  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting]);
 		}
 	}

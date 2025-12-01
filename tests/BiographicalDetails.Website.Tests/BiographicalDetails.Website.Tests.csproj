@@ -9,15 +9,14 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BiographicalDetails.Domain\BiographicalDetails.Domain.csproj" />
-    <ProjectReference Include="..\..\src\BiographicalDetails.Infrastructure.Sqlite\BiographicalDetails.Infrastructure.Sqlite.csproj" />
-    <ProjectReference Include="..\..\src\BiographicalDetails.Infrastructure.Sql\BiographicalDetails.Infrastructure.Sql.csproj" />
+    <ProjectReference Include="..\..\src\BiographicalDetails.Website\BiographicalDetails.Website.csproj" />
   </ItemGroup>
 
   <ItemGroup>

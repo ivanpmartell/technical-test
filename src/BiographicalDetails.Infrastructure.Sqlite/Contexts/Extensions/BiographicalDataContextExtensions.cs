@@ -1,4 +1,4 @@
-﻿using BiographicalDetails.Infrastructure.Sqlite.Contexts.Loggers;
+﻿using BiographicalDetails.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using static System.Environment;
@@ -14,10 +14,13 @@ public static class BiographicalDataContextExtensions
 			connectionString = DefaultConnectionString("BiographicalDetails");
 		}
 
+		var logger = new BiographicalDataLogger();
+		logger.FolderName = "sqlite-logs";
+
 		services.AddDbContext<BiographicalDataDbContext>(options =>
 		{
 			options.UseSqlite(connectionString);
-			options.LogTo(BiographicalDataLogger.WriteLine,
+			options.LogTo(logger.WriteLine,
 			  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting]);
 		},
 			contextLifetime: ServiceLifetime.Transient,

@@ -1,4 +1,4 @@
-﻿using BiographicalDetails.Infrastructure.Sql.Contexts.Loggers;
+﻿using BiographicalDetails.Helpers;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,10 +14,13 @@ public static class BiographicalDataContextExtensions
 			connectionString = DefaultConnectionString("BiographicalDetails");
 		}
 
+		var logger = new BiographicalDataLogger();
+		logger.FolderName = "sql-logs";
+
 		services.AddDbContext<BiographicalDataDbContext>(options =>
 			{
 				options.UseSqlServer(connectionString);
-				options.LogTo(BiographicalDataLogger.WriteLine,
+				options.LogTo(logger.WriteLine,
 				  [Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting]);
 			},
 			contextLifetime: ServiceLifetime.Transient,
