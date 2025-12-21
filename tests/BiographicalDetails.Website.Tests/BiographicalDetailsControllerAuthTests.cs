@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using BiographicalDetails.Infrastructure.Sqlite.Contexts;
+using BiographicalDetails.Infrastructure.Sql.Contexts;
 using Microsoft.EntityFrameworkCore;
 using BiographicalDetails.Website.Tests.Helpers;
 using Microsoft.AspNetCore.Authentication;

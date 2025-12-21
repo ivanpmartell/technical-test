@@ -39,6 +39,7 @@ public class SqliteDatabaseFixture : IDisposable
 	public void Dispose()
 	{
 		context.Dispose();
+		GC.SuppressFinalize(this);
 	}
 }
 
@@ -58,6 +59,7 @@ public class SqliteBiographicalDataRepositoryTests : IClassFixture<SqliteDatabas
 		_dbFixture.context.UserSins.RemoveRange(_dbFixture.context.UserSins);
 		_dbFixture.context.UserUcis.RemoveRange(_dbFixture.context.UserUcis);
 		_dbFixture.context.SaveChanges();
+		GC.SuppressFinalize(this);
 	}
 
 	[Fact]

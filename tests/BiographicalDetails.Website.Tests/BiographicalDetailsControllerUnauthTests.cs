@@ -1,4 +1,4 @@
-﻿using BiographicalDetails.Infrastructure.Sqlite.Contexts;
+﻿using BiographicalDetails.Infrastructure.Sql.Contexts;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
