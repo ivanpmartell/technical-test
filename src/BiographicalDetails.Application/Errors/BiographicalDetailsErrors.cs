@@ -1,6 +1,4 @@
-﻿
-
-namespace BiographicalDetails.Application.Errors;
+﻿namespace BiographicalDetails.Application.Errors;
 
 public static class BiographicalDetailsErrors
 {

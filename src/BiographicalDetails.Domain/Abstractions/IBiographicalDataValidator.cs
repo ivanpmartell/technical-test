@@ -1,7 +1,6 @@
-﻿namespace BiographicalDetails.Domain.Abstractions
+﻿namespace BiographicalDetails.Domain.Abstractions;
+
+public interface IBiographicalDataValidator
 {
-	public interface IBiographicalDataValidator
-	{
-		public void ValidateData(BiographicalData data);
-	}
+	public void ValidateData(BiographicalData data);
 }
