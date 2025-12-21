@@ -39,8 +39,8 @@ builder.Services.AddBiographicalDetailsSqliteContext(); // Database created in u
 builder.Services.AddScoped<IBiographicalDataRepository, SqliteBiographicalDataRepository>();
 
 builder.Services.AddScoped<IBiographicalDataMapper, BiographicalDataEntityMapper>();
-builder.Services.AddScoped<IValidatorSIN, SINValidator>();
-builder.Services.AddScoped<IValidatorUCI, UCIValidator>();
+builder.Services.AddKeyedSingleton<IStringValidator, SINValidator>("sin");
+builder.Services.AddKeyedSingleton<IStringValidator, UCIValidator>("uci");
 builder.Services.AddScoped<IBiographicalDataValidator, BiographicalDataValidator>();
 builder.Services.AddScoped<BiographicalDetailsService>();
 builder.Services.AddScoped<BiographicalDataRequestsMapper>();

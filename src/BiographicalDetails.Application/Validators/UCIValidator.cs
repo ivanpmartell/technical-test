@@ -5,7 +5,7 @@ using BiographicalDetails.Domain.Abstractions;
 
 namespace BiographicalDetails.Application.Validators;
 
-public class UCIValidator : IValidatorUCI
+public class UCIValidator : IStringValidator
 {
 	public bool IsValid(string uci, out string errorMessage)
 	{

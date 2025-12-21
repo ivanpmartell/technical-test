@@ -1,5 +1,5 @@
-﻿using BiographicalDetails.Domain;
-using BiographicalDetails.Website.Models.Enums;
+﻿using BiographicalDetails.Application.Utils;
+using BiographicalDetails.Domain;
 using BiographicalDetails.Website.Models.ViewModels;
 
 namespace BiographicalDetails.Website.Models.Mappers;
@@ -31,19 +31,13 @@ public class BiographicalDataRequestsMapper
 			FirstName = biographicalDetailsModel.FirstName,
 			LastName = biographicalDetailsModel.LastName,
 			Email = biographicalDetailsModel.Email,
-			PreferredPronouns = EnsureNullIfEmpty(biographicalDetailsModel.PreferredPronouns),
+			PreferredPronouns = StringUtility.EnsureNullIfEmpty(biographicalDetailsModel.PreferredPronouns),
 			LevelOfStudy = (Domain.LevelOfStudy)biographicalDetailsModel.LevelOfStudy,
 			ImmigrationStatus = (Domain.ImmigrationStatus)biographicalDetailsModel.ImmigrationStatus,
-			SocialInsuranceNumber = EnsureNullIfEmpty(biographicalDetailsModel.SocialInsuranceNumber),
-			UniqueClientIdentifier = EnsureNullIfEmpty(biographicalDetailsModel.UniqueClientIdentifier)
+			SocialInsuranceNumber = StringUtility.EnsureNullIfEmpty(biographicalDetailsModel.SocialInsuranceNumber),
+			UniqueClientIdentifier = StringUtility.EnsureNullIfEmpty(biographicalDetailsModel.UniqueClientIdentifier)
 		};
 		return biographicalData;
-	}
-
-	private string? EnsureNullIfEmpty(string? value)
-	{
-		return String.IsNullOrEmpty(value) ?
-			null : value;
 	}
 
 	public SubmissionViewModel MapToSubmissionViewModel(BiographicalData domainModel)

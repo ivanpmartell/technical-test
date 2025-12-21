@@ -13,7 +13,8 @@ public class UciAttribute : ValidationAttribute
 		if (uci is null)
 			return ValidationResult.Success;
 
-		var uciValidator = validationContext.GetService<IValidatorUCI>();
+		var serviceProvider = validationContext.GetService<IServiceProvider>();
+		var uciValidator = serviceProvider?.GetKeyedService<IStringValidator>("uci");
 		if (uciValidator is null)
 			return new ValidationResult("Unique client identifier could not be validated.");
 

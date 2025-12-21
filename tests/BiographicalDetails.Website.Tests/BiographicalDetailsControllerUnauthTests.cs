@@ -17,11 +17,9 @@ public class UnauthenticatedWebAppFixture : IDisposable
 			builder.ConfigureServices(services =>
 			{
 				var sp = services.BuildServiceProvider();
-				using (var scope = sp.CreateScope())
-				{
-					var db = scope.ServiceProvider.GetRequiredService<BiographicalDataDbContext>();
-					db.Database.Migrate();
-				}
+				using var scope = sp.CreateScope();
+				var db = scope.ServiceProvider.GetRequiredService<BiographicalDataDbContext>();
+				db.Database.Migrate();
 			});
 		});
 		client = factory.CreateClient(
@@ -33,12 +31,13 @@ public class UnauthenticatedWebAppFixture : IDisposable
 	{
 		client.Dispose();
 		factory.Dispose();
+		GC.SuppressFinalize(this);
 	}
 }
 
 public class BiographicalDetailsControllerUnauthTests : IClassFixture<UnauthenticatedWebAppFixture>
 {
-	private UnauthenticatedWebAppFixture _webappFixture;
+	private readonly UnauthenticatedWebAppFixture _webappFixture;
 
 	public BiographicalDetailsControllerUnauthTests(UnauthenticatedWebAppFixture appFixture)
 	{

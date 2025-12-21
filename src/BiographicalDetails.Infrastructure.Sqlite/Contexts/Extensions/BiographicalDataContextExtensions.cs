@@ -9,13 +9,12 @@ public static class BiographicalDataContextExtensions
 {
 	public static IServiceCollection AddBiographicalDetailsSqliteContext(this IServiceCollection services, string? connectionString = null)
 	{
-		if (connectionString is null)
-		{
-			connectionString = DefaultConnectionString("BiographicalDetails");
-		}
+		connectionString ??= DefaultConnectionString("BiographicalDetails");
 
-		var logger = new BiographicalDataLogger();
-		logger.FolderName = "sqlite-logs";
+		var logger = new BiographicalDataLogger
+		{
+			FolderName = "sqlite-logs"
+		};
 
 		services.AddDbContext<BiographicalDataDbContext>(options =>
 		{

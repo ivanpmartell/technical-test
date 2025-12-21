@@ -21,8 +21,10 @@ public class BiographicalDataDbContext: DbContext
 	{
 		if (!optionsBuilder.IsConfigured)
 		{
-			var logger = new BiographicalDataLogger();
-			logger.FolderName = "sqlite-logs";
+			var logger = new BiographicalDataLogger
+			{
+				FolderName = "sqlite-logs"
+			};
 
 			optionsBuilder.UseSqlite(BiographicalDataContextExtensions.DefaultConnectionString("BiographicalDetails"));
 			optionsBuilder.LogTo(logger.WriteLine,

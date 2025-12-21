@@ -22,11 +22,9 @@ public class AuthenticatedWebappFixture : IDisposable
 				    .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>("FakeAuth", options => { } );
 
 				var sp = services.BuildServiceProvider();
-				using (var scope = sp.CreateScope())
-				{
-					var db = scope.ServiceProvider.GetRequiredService<BiographicalDataDbContext>();
-					db.Database.Migrate();
-				}
+				using var scope = sp.CreateScope();
+				var db = scope.ServiceProvider.GetRequiredService<BiographicalDataDbContext>();
+				db.Database.Migrate();
 			});
 		});
 		client = factory.CreateClient(
@@ -38,12 +36,13 @@ public class AuthenticatedWebappFixture : IDisposable
 	{
 		client.Dispose();
 		factory.Dispose();
+		GC.SuppressFinalize(this);
 	}
 }
 
 public class BiographicalDetailsControllerAuthTests : IClassFixture<AuthenticatedWebappFixture>
 {
-	private AuthenticatedWebappFixture _webappFixture;
+	private readonly AuthenticatedWebappFixture _webappFixture;
 
 	public BiographicalDetailsControllerAuthTests(AuthenticatedWebappFixture appFixture)
 	{

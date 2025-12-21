@@ -5,7 +5,7 @@ using BiographicalDetails.Domain.Abstractions;
 
 namespace BiographicalDetails.Application.Validators;
 
-public class SINValidator : IValidatorSIN
+public class SINValidator : IStringValidator
 {
 	public bool IsValid(string sin, out string errorMessage)
 	{
@@ -25,19 +25,20 @@ public class SINValidator : IValidatorSIN
 		return true;
 	}
 
-	private bool IsValidSINFormat(string sin)
+	private static bool IsValidSINFormat(string sin)
 	{
 		var pattern = @"^\d{3}-\d{3}-\d{3}$";
 		var match = Regex.Match(sin, pattern);
 		return match.Success;
 	}
 
-	private bool LuhnsAlgorithm_IsValid(string sin)
+	private static bool LuhnsAlgorithm_IsValid(string socialInsuranceNumber)
 	{
 		var sum = 0;
 		var isEveryOtherDigit = false;
 		bool hasAtLeastOneValidChar = false;
 
+		var sin = socialInsuranceNumber.AsSpan();
 		for (int i = sin.Length - 1; i >= 0; i--)
 		{
 			var currentChar = sin[i];
@@ -56,7 +57,7 @@ public class SINValidator : IValidatorSIN
 				{
 					int multiplyBy2ResultDigit = multiplyBy2Result % 10;
 					sum += multiplyBy2ResultDigit;
-					multiplyBy2Result = multiplyBy2Result / 10;
+					multiplyBy2Result /= 10;
 				}
 			}
 			else

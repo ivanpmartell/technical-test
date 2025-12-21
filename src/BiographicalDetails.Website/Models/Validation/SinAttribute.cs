@@ -13,7 +13,8 @@ public class SinAttribute : ValidationAttribute
 		if (sin is null)
 			return ValidationResult.Success;
 
-		var sinValidator = validationContext.GetService<IValidatorSIN>();
+		var serviceProvider = validationContext.GetService<IServiceProvider>();
+		var sinValidator = serviceProvider?.GetKeyedService<IStringValidator>("sin");
 		if (sinValidator is null)
 			return new ValidationResult("Social insurance number could not be validated.");
 

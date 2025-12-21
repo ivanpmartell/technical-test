@@ -18,8 +18,10 @@ public class BiographicalDataDbContext : DbContext
 	{
 		if (!optionsBuilder.IsConfigured)
 		{
-			var logger = new BiographicalDataLogger();
-			logger.FolderName = "sql-logs";
+			var logger = new BiographicalDataLogger
+			{
+				FolderName = "sql-logs"
+			};
 
 			optionsBuilder.UseSqlServer(BiographicalDataContextExtensions.DefaultConnectionString("BiographicalDetails"));
 			optionsBuilder.LogTo(logger.WriteLine,

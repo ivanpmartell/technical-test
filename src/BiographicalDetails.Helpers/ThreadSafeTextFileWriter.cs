@@ -8,10 +8,8 @@
 		{
 			lock (_lock)
 			{
-				using (StreamWriter textFile = new StreamWriter(path, true))
-				{
-					textFile.WriteLine(message);
-				}
+				using StreamWriter textFile = new(path, true);
+				textFile.WriteLine(message);
 			}
 		}
 	}

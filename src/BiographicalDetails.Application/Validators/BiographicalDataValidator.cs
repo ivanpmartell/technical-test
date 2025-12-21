@@ -1,14 +1,15 @@
 ﻿using BiographicalDetails.Application.Errors;
 using BiographicalDetails.Domain;
 using BiographicalDetails.Domain.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BiographicalDetails.Application.Validators;
 
 public class BiographicalDataValidator : IBiographicalDataValidator
 {
-	IStringValidator _sinValidator;
-	IStringValidator _uciValidator;
-	public BiographicalDataValidator(IValidatorSIN sinValidator, IValidatorUCI uciValidator)
+	private readonly IStringValidator _sinValidator;
+	private readonly IStringValidator _uciValidator;
+	public BiographicalDataValidator([FromKeyedServices("sin")]IStringValidator sinValidator, [FromKeyedServices("uci")] IStringValidator uciValidator)
 	{
 		_sinValidator = sinValidator;
 		_uciValidator = uciValidator;
@@ -35,7 +36,7 @@ public class BiographicalDataValidator : IBiographicalDataValidator
 		}
 	}
 
-	private bool ImmigrationStatusRequiresSIN(ImmigrationStatus immigrationStatus)
+	private static bool ImmigrationStatusRequiresSIN(ImmigrationStatus immigrationStatus)
 	{
 		return immigrationStatus is (ImmigrationStatus.CanadianCitizen
 			or ImmigrationStatus.PermanentResident
@@ -44,7 +45,7 @@ public class BiographicalDataValidator : IBiographicalDataValidator
 			or ImmigrationStatus.Indigenous);
 	}
 
-	private bool ImmigrationStatusRequiresUCI(ImmigrationStatus immigrationStatus)
+	private static bool ImmigrationStatusRequiresUCI(ImmigrationStatus immigrationStatus)
 	{
 		return immigrationStatus is (ImmigrationStatus.PermanentResident
 			or ImmigrationStatus.TemporaryForeignWorker

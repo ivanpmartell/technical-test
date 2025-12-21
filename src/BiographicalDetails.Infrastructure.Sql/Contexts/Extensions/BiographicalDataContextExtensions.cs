@@ -9,13 +9,12 @@ public static class BiographicalDataContextExtensions
 {
 	public static IServiceCollection AddBiographicalDetailsSqlContext(this IServiceCollection services, string? connectionString = null)
 	{
-		if (connectionString is null)
-		{
-			connectionString = DefaultConnectionString("BiographicalDetails");
-		}
+		connectionString ??= DefaultConnectionString("BiographicalDetails");
 
-		var logger = new BiographicalDataLogger();
-		logger.FolderName = "sql-logs";
+		var logger = new BiographicalDataLogger
+		{
+			FolderName = "sql-logs"
+		};
 
 		services.AddDbContext<BiographicalDataDbContext>(options =>
 			{
@@ -31,16 +30,17 @@ public static class BiographicalDataContextExtensions
 
 	public static string DefaultConnectionString(string dbName)
 	{
-		SqlConnectionStringBuilder builder = new();
+		SqlConnectionStringBuilder builder = new()
+		{
+			// Azure SQL Edge in Docker (locally)
+			DataSource = "tcp:127.0.0.1,1433",
+			InitialCatalog = dbName,
+			TrustServerCertificate = true,
+			MultipleActiveResultSets = true,
 
-		// Azure SQL Edge in Docker (locally)
-		builder.DataSource = "tcp:127.0.0.1,1433";
-		builder.InitialCatalog = dbName;
-		builder.TrustServerCertificate = true;
-		builder.MultipleActiveResultSets = true;
-
-		builder.UserID = Environment.GetEnvironmentVariable("MY_SQL_USR");
-		builder.Password = Environment.GetEnvironmentVariable("MY_SQL_PWD");
+			UserID = Environment.GetEnvironmentVariable("MY_SQL_USR"),
+			Password = Environment.GetEnvironmentVariable("MY_SQL_PWD")
+		};
 
 		return builder.ConnectionString;
 	}
