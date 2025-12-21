@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using BiographicalDetails.Website.Models.Mappers;
+using BiographicalDetails.Application.Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,11 +39,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddBiographicalDetailsSqliteContext(); // Database created in users "Desktop" by default
 builder.Services.AddScoped<IBiographicalDataRepository, SqliteBiographicalDataRepository>();
 
-builder.Services.AddScoped<IBiographicalDataMapper, BiographicalDataEntityMapper>();
-builder.Services.AddKeyedSingleton<IStringValidator, SINValidator>("sin");
-builder.Services.AddKeyedSingleton<IStringValidator, UCIValidator>("uci");
-builder.Services.AddScoped<IBiographicalDataValidator, BiographicalDataValidator>();
-builder.Services.AddScoped<BiographicalDetailsService>();
+builder.Services.AddBiographicalDetailsService();
 builder.Services.AddScoped<BiographicalDataRequestsMapper>();
 // End of our services
 

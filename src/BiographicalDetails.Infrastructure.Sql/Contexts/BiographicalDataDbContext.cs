@@ -1,4 +1,5 @@
 ﻿using BiographicalDetails.Domain;
+using BiographicalDetails.EntityModels;
 using BiographicalDetails.Helpers;
 using BiographicalDetails.Infrastructure.Sql.Contexts.Extensions;
 using Microsoft.EntityFrameworkCore;

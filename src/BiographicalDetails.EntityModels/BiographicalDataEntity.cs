@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using BiographicalDetails.Domain;
 
-namespace BiographicalDetails.Domain;
+namespace BiographicalDetails.EntityModels;
 
 public class BiographicalDataEntity
 {

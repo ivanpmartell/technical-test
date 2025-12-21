@@ -106,8 +106,8 @@ public class BiographicalDataEntityMapper : IBiographicalDataMapper
 
 	public void MapToUserByRef(BiographicalData domainModel, UserEntity user)
 	{
-		if (user is null)
-			throw new ArgumentNullException(BiographicalDataMapperErrors.CannotUpdateUserReferenceOfNull);
+		ArgumentNullException.ThrowIfNull(user,
+			BiographicalDataMapperErrors.CannotUpdateUserReferenceOfNull);
 
 		user.FirstName = domainModel.FirstName;
 		user.LastName = domainModel.LastName;
@@ -118,8 +118,8 @@ public class BiographicalDataEntityMapper : IBiographicalDataMapper
 
 	public void MapToUserPronounsByRef(BiographicalData domainModel, UserPronounEntity userPronoun)
 	{
-		if (userPronoun is null)
-			throw new ArgumentNullException(BiographicalDataMapperErrors.CannotUpdateUserPronounsReferenceOfNull);
+		ArgumentNullException.ThrowIfNull(userPronoun,
+			BiographicalDataMapperErrors.CannotUpdateUserPronounsReferenceOfNull);
 
 		if (domainModel.PreferredPronouns is null)
 			throw new NullReferenceException(BiographicalDataMapperErrors.UserPronouns_Missing);
@@ -130,8 +130,8 @@ public class BiographicalDataEntityMapper : IBiographicalDataMapper
 
 	public void MapToUserSINByRef(BiographicalData domainModel, UserSinEntity userSin)
 	{
-		if (userSin is null)
-			throw new ArgumentNullException(BiographicalDataMapperErrors.CannotUpdateUserSinReferenceOfNull);
+		ArgumentNullException.ThrowIfNull(userSin,
+			BiographicalDataMapperErrors.CannotUpdateUserSinReferenceOfNull);
 
 		if (domainModel.SocialInsuranceNumber is null)
 			throw new NullReferenceException(BiographicalDataMapperErrors.UserSin_Missing);
@@ -142,8 +142,8 @@ public class BiographicalDataEntityMapper : IBiographicalDataMapper
 
 	public void MapToUserUCIByRef(BiographicalData domainModel, UserUciEntity userUci)
 	{
-		if (userUci is null)
-			throw new ArgumentNullException(BiographicalDataMapperErrors.CannotUpdateUserUciReferenceOfNull);
+		ArgumentNullException.ThrowIfNull(userUci,
+			BiographicalDataMapperErrors.CannotUpdateUserUciReferenceOfNull);
 
 		if (domainModel.UniqueClientIdentifier is null)
 			throw new NullReferenceException(BiographicalDataMapperErrors.UserUci_Missing);

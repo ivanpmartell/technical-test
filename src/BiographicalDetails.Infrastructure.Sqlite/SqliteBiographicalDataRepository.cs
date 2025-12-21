@@ -1,14 +1,10 @@
 ﻿using System.Data;
-using System.Security.Cryptography.Xml;
 using BiographicalDetails.Domain;
 using BiographicalDetails.Domain.Abstractions;
-using BiographicalDetails.EntityModels;
 using BiographicalDetails.EntityModels.Abstractions;
-using BiographicalDetails.EntityModels.Mappers;
 using BiographicalDetails.Infrastructure.Sqlite.Contexts;
 using BiographicalDetails.Infrastructure.Sqlite.Errors;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BiographicalDetails.Infrastructure.Sqlite;
 
@@ -36,22 +32,20 @@ public class SqliteBiographicalDataRepository : IBiographicalDataRepository
 
 		var addedPartialBiographicalData = _mapper.MapFrom(addedUser.Entity);
 
-		EntityEntry<UserPronounEntity>? addedPronouns = null;
 		if (biographicalData.PreferredPronouns is not null)
 		{
 			addedPartialBiographicalData.PreferredPronouns = biographicalData.PreferredPronouns;
 
 			var pronouns = _mapper.MapToUserPronouns(addedPartialBiographicalData);
-			addedPronouns = await _context.AddAsync(pronouns);
+			await _context.AddAsync(pronouns);
 		}
 
-		EntityEntry<UserSinEntity>? addedSin = null;
 		if (biographicalData.SocialInsuranceNumber is not null)
 		{
 			addedPartialBiographicalData.SocialInsuranceNumber = biographicalData.SocialInsuranceNumber;
 
 			var sin = _mapper.MapToUserSIN(addedPartialBiographicalData);
-			addedSin = await _context.AddAsync(sin);
+			await _context.AddAsync(sin);
 		}
 
 		if (biographicalData.UniqueClientIdentifier is not null)
@@ -61,7 +55,7 @@ public class SqliteBiographicalDataRepository : IBiographicalDataRepository
 			var uci = _mapper.MapToUserUCI(addedPartialBiographicalData);
 			await _context.AddAsync(uci);
 		}
-		
+
 		var rowsAffected = await _context.SaveChangesAsync();
 
 		if (rowsAffected == 0)
@@ -123,7 +117,8 @@ public class SqliteBiographicalDataRepository : IBiographicalDataRepository
 	public async Task<BiographicalData?> GetAsync(int biographicalDataId)
 	{
 		var result =
-			from users in _context.Users where users.Id == biographicalDataId
+			from users in _context.Users
+			where users.Id == biographicalDataId
 			from pronouns in _context.UserPronouns.Where(pronoun => pronoun.UserId == users.Id).DefaultIfEmpty()
 			from sins in _context.UserSins.Where(sin => sin.UserId == users.Id).DefaultIfEmpty()
 			from ucis in _context.UserUcis.Where(uci => uci.UserId == users.Id).DefaultIfEmpty()

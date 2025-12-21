@@ -1,4 +1,5 @@
 ﻿using BiographicalDetails.Domain;
+using BiographicalDetails.EntityModels;
 using BiographicalDetails.EntityModels.Abstractions;
 using BiographicalDetails.EntityModels.Mappers;
 using BiographicalDetails.Helpers;
@@ -19,8 +20,10 @@ public class SqlDatabaseFixture : IDisposable
 	public SqlDatabaseFixture()
 	{
 		var dbName = $"BiographicalDetails_Tests";
-		var logger = new BiographicalDataLogger();
-		logger.FolderName = "sql-logs-tests";
+		var logger = new BiographicalDataLogger
+		{
+			FolderName = "sql-logs-tests"
+		};
 
 		var options = new DbContextOptionsBuilder<BiographicalDataDbContext>()
 			.UseSqlServer(BiographicalDataContextExtensions.DefaultConnectionString(dbName))
@@ -39,12 +42,13 @@ public class SqlDatabaseFixture : IDisposable
 	public void Dispose()
 	{
 		context.Dispose();
+		GC.SuppressFinalize(this);
 	}
 }
 
 public class SqlBiographicalDataRepositoryTests : IClassFixture<SqlDatabaseFixture>, IDisposable
 {
-	private SqlDatabaseFixture _dbFixture;
+	private readonly SqlDatabaseFixture _dbFixture;
 
 	public SqlBiographicalDataRepositoryTests(SqlDatabaseFixture dbFixture)
 	{
@@ -55,6 +59,7 @@ public class SqlBiographicalDataRepositoryTests : IClassFixture<SqlDatabaseFixtu
 	{
 		_dbFixture.context.BiographicalDatas.RemoveRange(_dbFixture.context.BiographicalDatas);
 		_dbFixture.context.SaveChanges();
+		GC.SuppressFinalize(this);
 	}
 
 	[Fact]
