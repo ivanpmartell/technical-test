@@ -28,12 +28,10 @@ sql.UserID = Environment.GetEnvironmentVariable("MY_SQL_USR");
 sql.Password = Environment.GetEnvironmentVariable("MY_SQL_PWD");
 
 builder.Services.AddBiographicalDetailsSqlContext(sql.ConnectionString);
-builder.Services.AddScoped<IBiographicalDataRepository, SqlBiographicalDataRepository>();
 
 
 // Can also change to Sqlite database (different db schema)
 //builder.Services.AddBiographicalDetailsSqliteContext(); // Database created in users "Desktop" by default
-//builder.Services.AddScoped<IBiographicalDataRepository, SqliteBiographicalDataRepository>();
 
 builder.Services.AddBiographicalDetailsService();
 builder.Services.AddScoped<BiographicalDataRequestsMapper>();

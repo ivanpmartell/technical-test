@@ -1,4 +1,5 @@
-﻿using BiographicalDetails.EntityModels.Abstractions;
+﻿using BiographicalDetails.Domain.Abstractions;
+using BiographicalDetails.EntityModels.Abstractions;
 using BiographicalDetails.EntityModels.Mappers;
 using BiographicalDetails.Helpers;
 using Microsoft.Data.SqlClient;
@@ -27,6 +28,7 @@ public static class BiographicalDataContextExtensions
 			contextLifetime: ServiceLifetime.Transient,
 			optionsLifetime: ServiceLifetime.Transient);
 
+		services.AddScoped<IBiographicalDataRepository, SqlBiographicalDataRepository>();
 		services.AddScoped<IBiographicalDataMapper, BiographicalDataEntityMapper>();
 		return services;
 	}
